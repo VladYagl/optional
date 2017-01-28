@@ -34,7 +34,17 @@ struct optional {
 	}
 
 	optional& operator=(optional other) {
-		swap(other);
+		if (valid) {
+			if (other.valid) {
+				storage = other.storage;
+			} else {
+				reset();
+			}
+		} else {
+			if (other.valid) {
+				emplace(std::move(*other));
+			}
+		}
 		return *this;
 	}
 
