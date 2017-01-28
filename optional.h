@@ -23,15 +23,13 @@ struct optional {
 
 	optional (optional const& other) : valid(other.valid) {
 		if (valid) {
-			new (&storage) T(std::forward<const T&>(*other));
+			new (&storage) T(*other);
 		}
 	}
 
-	optional (optional && other) {
-		valid = false;
+	optional (optional && other) : valid(false) {
 		if (other) {
-			emplace(*other);
-			valid = true;
+			emplace(std::move(*other));
 		}
 	}
 
@@ -54,13 +52,11 @@ struct optional {
 			if (other.valid) {
 				std::swap(storage, other.storage);
 			} else {
-				std::swap(valid, other.valid);
 				other.emplace(**this);
 				reset();
 			}
 		} else {
 			if (other.valid) {
-				std::swap(valid, other.valid);
 				emplace(*other);
 				other.reset();
 			}
@@ -94,7 +90,7 @@ struct optional {
 		if (valid) {
 			return **this;
 		} else {
-			return default_value;
+			return std::move(default_value);
 		}
 	}
 
@@ -162,9 +158,7 @@ private:
 
 template <typename T, typename ... Args>
 optional<T> make_optional(Args&& ...args) {
-	optional<T> result;
-	result.emplace(std::forward<Args>(args)...);
-	return result;
+	return optional<T> (implace, std::forward<Args>(args)...);
 }
 
 
