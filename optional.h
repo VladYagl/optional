@@ -34,11 +34,7 @@ struct optional {
 	}
 
 	optional& operator=(optional other) {
-		if (other.valid) {
-			emplace(*other);
-		} else {
-			reset();
-		}
+		swap(other);
 		return *this;
 	}
 

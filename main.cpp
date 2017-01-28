@@ -1,16 +1,12 @@
 #include <iostream>
 #include <string>
-
 #include "optional.h"
-#include "test.h"
+//#include "test.h"
 
 
 using namespace std;
 
 int main() {
-	test test_obj;
-	cout << endl;
-
 	optional<string> a("some string");
 	optional<string> b;
 	optional<string> c(nullopt);
